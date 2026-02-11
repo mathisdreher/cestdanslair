@@ -22,6 +22,7 @@ interface DashboardData {
   topVideos: { title: string; views: number; likes: number; comments: number; published_at: string; url: string }[];
   bestMonths: { month: string; views: number; count: number }[];
   topTags: { tag: string; count: number }[];
+  geoData: { region: string; count: number; percentage: string }[];
 }
 
 const COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#06b6d4", "#f43f5e", "#84cc16"];
@@ -45,18 +46,16 @@ export default function DashboardPage() {
 
   if (!data) return <div className="p-8 text-muted">Chargement...</div>;
 
-  const { stats, monthly, yearly, durationDistribution, topVideos, bestMonths, topTags } = data;
+  const { stats, monthly, yearly, durationDistribution, topVideos, bestMonths, topTags, geoData } = data;
   const firstYear = new Date(stats.firstDate).getFullYear();
   const lastYear = new Date(stats.lastDate).getFullYear();
 
   const yearlySeries = [
-    { key: "count", name: "Épisodes", color: COLORS[0] },
     { key: "avgViews", name: "Vues moyennes", color: COLORS[1] },
     { key: "engagement", name: "Engagement %", color: COLORS[2] },
   ];
 
   const monthlySeries = [
-    { key: "count", name: "Épisodes", color: COLORS[0] },
     { key: "views", name: "Vues totales", color: COLORS[3] },
   ];
 
@@ -80,7 +79,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">C dans l&apos;air — Tableau de bord</h1>
-        <p className="text-muted mt-1">{firstYear} – {lastYear} · {stats.totalVideos.toLocaleString("fr")} épisodes analysés</p>
+        <p className="text-muted mt-1">{firstYear} – 2025 · {stats.totalVideos.toLocaleString("fr")} épisodes analysés</p>
       </div>
 
       {/* Stat cards */}
@@ -186,6 +185,75 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </ChartContainer>
       </div>
+
+      {/* Engagement overview - hybrid table & chart */}
+      <ChartContainer title="📊 Engagement par année" subtitle="Ratio likes + commentaires / vues">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Mini chart */}
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={yearly}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+              <XAxis dataKey="year" stroke="#94a3b8" fontSize={12} />
+              <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(v) => v.toFixed(2) + "%"} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }}
+                formatter={(value) => [Number(value ?? 0).toFixed(2) + "%", "Engagement"]}
+              />
+              <Bar dataKey="engagement" fill="#ec4899" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+
+          {/* Table */}
+          <div className="overflow-y-auto max-h-[300px]">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-[var(--card-bg)]">
+                <tr className="text-left text-muted border-b border-[var(--card-border)]">
+                  <th className="py-2 px-2">Année</th>
+                  <th className="py-2 px-2 text-right">Épisodes</th>
+                  <th className="py-2 px-2 text-right">Engagement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {yearly.map((y) => (
+                  <tr key={y.year} className="border-b border-[var(--card-border)]">
+                    <td className="py-2 px-2 font-medium">{y.year}</td>
+                    <td className="py-2 px-2 text-right text-muted">{y.count}</td>
+                    <td className="py-2 px-2 text-right">
+                      <span className="font-bold" style={{ color: "#ec4899" }}>{y.engagement.toFixed(2)}%</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ChartContainer>
+
+      {/* Geographic coverage map */}
+      <ChartContainer title="🌍 Couverture géographique" subtitle="Pays et régions les plus mentionnés">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {geoData.map((geo, i) => (
+            <div
+              key={geo.region}
+              className="relative group rounded-lg p-4 border transition-all hover:border-blue-500 cursor-pointer"
+              style={{
+                borderColor: "var(--card-border)",
+                background: `linear-gradient(135deg, rgba(59, 130, 246, ${0.05 + (i === 0 ? 0.15 : i < 3 ? 0.1 : i < 10 ? 0.05 : 0.02)}) 0%, transparent 100%)`,
+              }}
+            >
+              <div className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
+                #{i + 1}
+              </div>
+              <div className="text-base font-bold mb-1 truncate">{geo.region}</div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl font-bold text-accent">{geo.count}</span>
+                <span className="text-xs text-muted">{geo.percentage}%</span>
+              </div>
+              <div className="absolute inset-0 bg-blue-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            </div>
+          ))}
+        </div>
+      </ChartContainer>
 
       {/* Best months */}
       <ChartContainer title="🏆 Mois les plus vus">

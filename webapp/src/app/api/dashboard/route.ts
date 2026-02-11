@@ -93,6 +93,49 @@ export async function GET() {
     .slice(0, 10)
     .map(([tag, count]) => ({ tag, count }));
 
+  // Geographic coverage - countries/regions mentioned
+  const geoKeywords = new Map([
+    ["france", "France"],
+    ["états-unis", "USA"], ["usa", "USA"], ["etats-unis", "USA"], ["amérique", "USA"],
+    ["chine", "Chine"],
+    ["russie", "Russie"],
+    ["ukraine", "Ukraine"],
+    ["allemagne", "Allemagne"],
+    ["royaume-uni", "Royaume-Uni"], ["angleterre", "Royaume-Uni"], ["brexit", "Royaume-Uni"],
+    ["italie", "Italie"],
+    ["espagne", "Espagne"],
+    ["iran", "Iran"],
+    ["israël", "Israël"], ["israel", "Israël"],
+    ["palestine", "Palestine"], ["gaza", "Palestine"],
+    ["syrie", "Syrie"],
+    ["turquie", "Turquie"],
+    ["japon", "Japon"],
+    ["corée", "Corée"], ["coree", "Corée"],
+    ["inde", "Inde"],
+    ["brésil", "Brésil"], ["bresil", "Brésil"],
+    ["mexique", "Mexique"],
+    ["canada", "Canada"],
+    ["australie", "Australie"],
+    ["afrique", "Afrique"],
+    ["europe", "Europe"],
+    ["asie", "Asie"],
+  ]);
+
+  const geoCounts: Record<string, number> = {};
+  videos.forEach((v) => {
+    const combinedText = `${v.title} ${v.tags.join(" ")} ${v.description}`.toLowerCase();
+    geoKeywords.forEach((region, keyword) => {
+      if (combinedText.includes(keyword)) {
+        geoCounts[region] = (geoCounts[region] || 0) + 1;
+      }
+    });
+  });
+
+  const geoData = Object.entries(geoCounts)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 20)
+    .map(([region, count]) => ({ region, count, percentage: ((count / totalVideos) * 100).toFixed(1) }));
+
   return NextResponse.json({
     stats: { totalVideos, totalViews, totalLikes, totalComments, avgViews, totalHours, firstDate, lastDate },
     monthly,
@@ -101,5 +144,6 @@ export async function GET() {
     topVideos,
     bestMonths,
     topTags,
+    geoData,
   });
 }
