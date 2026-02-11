@@ -6,6 +6,9 @@ import {
   BarChart, Bar, PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { StatCard, ChartContainer } from "@/components/Cards";
+import dynamic from "next/dynamic";
+
+const WorldMap = dynamic(() => import("@/components/WorldMap"), { ssr: false });
 
 interface DashboardData {
   stats: {
@@ -22,7 +25,7 @@ interface DashboardData {
   topVideos: { title: string; views: number; likes: number; comments: number; published_at: string; url: string }[];
   bestMonths: { month: string; views: number; count: number }[];
   topTags: { tag: string; count: number }[];
-  geoData: { region: string; count: number; percentage: string }[];
+  geoData: { region: string; count: number; iso: string; searchTerm: string; percentage: string }[];
 }
 
 const COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#06b6d4", "#f43f5e", "#84cc16"];
@@ -229,30 +232,9 @@ export default function DashboardPage() {
         </div>
       </ChartContainer>
 
-      {/* Geographic coverage map */}
-      <ChartContainer title="🌍 Couverture géographique" subtitle="Pays et régions les plus mentionnés">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {geoData.map((geo, i) => (
-            <div
-              key={geo.region}
-              className="relative group rounded-lg p-4 border transition-all hover:border-blue-500 cursor-pointer"
-              style={{
-                borderColor: "var(--card-border)",
-                background: `linear-gradient(135deg, rgba(59, 130, 246, ${0.05 + (i === 0 ? 0.15 : i < 3 ? 0.1 : i < 10 ? 0.05 : 0.02)}) 0%, transparent 100%)`,
-              }}
-            >
-              <div className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
-                #{i + 1}
-              </div>
-              <div className="text-base font-bold mb-1 truncate">{geo.region}</div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold text-accent">{geo.count}</span>
-                <span className="text-xs text-muted">{geo.percentage}%</span>
-              </div>
-              <div className="absolute inset-0 bg-blue-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-            </div>
-          ))}
-        </div>
+      {/* Interactive world map */}
+      <ChartContainer title="🌍 Couverture géographique" subtitle="Pays et régions les plus mentionnés — cliquez pour explorer">
+        <WorldMap geoData={geoData} />
       </ChartContainer>
 
       {/* Best months */}

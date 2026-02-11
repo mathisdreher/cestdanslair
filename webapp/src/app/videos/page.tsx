@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface VideoEntry {
   video_id: string;
@@ -24,9 +25,20 @@ interface VideosData {
 }
 
 export default function VideosPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-muted">Chargement...</div>}>
+      <VideosContent />
+    </Suspense>
+  );
+}
+
+function VideosContent() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+
   const [data, setData] = useState<VideosData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialQuery);
   const [sort, setSort] = useState("date");
   const [order, setOrder] = useState("desc");
   const [page, setPage] = useState(1);

@@ -93,48 +93,71 @@ export async function GET() {
     .slice(0, 10)
     .map(([tag, count]) => ({ tag, count }));
 
-  // Geographic coverage - countries/regions mentioned
-  const geoKeywords = new Map([
-    ["france", "France"],
-    ["états-unis", "USA"], ["usa", "USA"], ["etats-unis", "USA"], ["amérique", "USA"],
-    ["chine", "Chine"],
-    ["russie", "Russie"],
-    ["ukraine", "Ukraine"],
-    ["allemagne", "Allemagne"],
-    ["royaume-uni", "Royaume-Uni"], ["angleterre", "Royaume-Uni"], ["brexit", "Royaume-Uni"],
-    ["italie", "Italie"],
-    ["espagne", "Espagne"],
-    ["iran", "Iran"],
-    ["israël", "Israël"], ["israel", "Israël"],
-    ["palestine", "Palestine"], ["gaza", "Palestine"],
-    ["syrie", "Syrie"],
-    ["turquie", "Turquie"],
-    ["japon", "Japon"],
-    ["corée", "Corée"], ["coree", "Corée"],
-    ["inde", "Inde"],
-    ["brésil", "Brésil"], ["bresil", "Brésil"],
-    ["mexique", "Mexique"],
-    ["canada", "Canada"],
-    ["australie", "Australie"],
-    ["afrique", "Afrique"],
-    ["europe", "Europe"],
-    ["asie", "Asie"],
-  ]);
+  // Geographic coverage - countries/regions mentioned with ISO codes + search terms
+  const geoKeywords: { keywords: string[]; name: string; iso: string; searchTerm: string }[] = [
+    { keywords: ["france"], name: "France", iso: "FRA", searchTerm: "france" },
+    { keywords: ["états-unis", "usa", "etats-unis", "amérique", "trump", "biden", "washington"], name: "États-Unis", iso: "USA", searchTerm: "états-unis" },
+    { keywords: ["chine", "pékin", "xi jinping"], name: "Chine", iso: "CHN", searchTerm: "chine" },
+    { keywords: ["russie", "moscou", "poutine", "kremlin"], name: "Russie", iso: "RUS", searchTerm: "russie" },
+    { keywords: ["ukraine", "kiev", "zelensky"], name: "Ukraine", iso: "UKR", searchTerm: "ukraine" },
+    { keywords: ["allemagne", "berlin", "merkel", "scholz"], name: "Allemagne", iso: "DEU", searchTerm: "allemagne" },
+    { keywords: ["royaume-uni", "angleterre", "brexit", "londres"], name: "Royaume-Uni", iso: "GBR", searchTerm: "royaume-uni" },
+    { keywords: ["italie", "rome", "meloni"], name: "Italie", iso: "ITA", searchTerm: "italie" },
+    { keywords: ["espagne", "madrid"], name: "Espagne", iso: "ESP", searchTerm: "espagne" },
+    { keywords: ["iran", "téhéran"], name: "Iran", iso: "IRN", searchTerm: "iran" },
+    { keywords: ["israël", "israel", "netanyahu", "tel-aviv"], name: "Israël", iso: "ISR", searchTerm: "israël" },
+    { keywords: ["palestine", "gaza", "hamas", "cisjordanie"], name: "Palestine", iso: "PSE", searchTerm: "gaza" },
+    { keywords: ["syrie", "damas", "assad"], name: "Syrie", iso: "SYR", searchTerm: "syrie" },
+    { keywords: ["turquie", "ankara", "erdogan"], name: "Turquie", iso: "TUR", searchTerm: "turquie" },
+    { keywords: ["japon", "tokyo"], name: "Japon", iso: "JPN", searchTerm: "japon" },
+    { keywords: ["corée", "coree", "pyongyang", "séoul"], name: "Corée", iso: "KOR", searchTerm: "corée" },
+    { keywords: ["inde", "modi", "delhi"], name: "Inde", iso: "IND", searchTerm: "inde" },
+    { keywords: ["brésil", "bresil", "brasilia"], name: "Brésil", iso: "BRA", searchTerm: "brésil" },
+    { keywords: ["mexique", "mexico"], name: "Mexique", iso: "MEX", searchTerm: "mexique" },
+    { keywords: ["canada", "ottawa", "trudeau"], name: "Canada", iso: "CAN", searchTerm: "canada" },
+    { keywords: ["australie", "sydney"], name: "Australie", iso: "AUS", searchTerm: "australie" },
+    { keywords: ["algérie", "algerie", "alger"], name: "Algérie", iso: "DZA", searchTerm: "algérie" },
+    { keywords: ["maroc", "rabat"], name: "Maroc", iso: "MAR", searchTerm: "maroc" },
+    { keywords: ["tunisie", "tunis"], name: "Tunisie", iso: "TUN", searchTerm: "tunisie" },
+    { keywords: ["liban", "beyrouth", "hezbollah"], name: "Liban", iso: "LBN", searchTerm: "liban" },
+    { keywords: ["irak", "bagdad"], name: "Irak", iso: "IRQ", searchTerm: "irak" },
+    { keywords: ["afghanistan", "kaboul", "taliban"], name: "Afghanistan", iso: "AFG", searchTerm: "afghanistan" },
+    { keywords: ["groenland"], name: "Groenland", iso: "GRL", searchTerm: "groenland" },
+    { keywords: ["pologne", "varsovie"], name: "Pologne", iso: "POL", searchTerm: "pologne" },
+    { keywords: ["grèce", "grece", "athènes"], name: "Grèce", iso: "GRC", searchTerm: "grèce" },
+    { keywords: ["belgique", "bruxelles"], name: "Belgique", iso: "BEL", searchTerm: "belgique" },
+    { keywords: ["libye", "tripoli"], name: "Libye", iso: "LBY", searchTerm: "libye" },
+    { keywords: ["mali", "bamako"], name: "Mali", iso: "MLI", searchTerm: "mali" },
+    { keywords: ["niger"], name: "Niger", iso: "NER", searchTerm: "niger" },
+    { keywords: ["soudan", "khartoum"], name: "Soudan", iso: "SDN", searchTerm: "soudan" },
+    { keywords: ["venezuela", "caracas", "maduro"], name: "Venezuela", iso: "VEN", searchTerm: "venezuela" },
+    { keywords: ["arabie saoudite", "riyad"], name: "Arabie Saoudite", iso: "SAU", searchTerm: "arabie saoudite" },
+    { keywords: ["qatar", "doha"], name: "Qatar", iso: "QAT", searchTerm: "qatar" },
+    { keywords: ["égypte", "egypte", "caire"], name: "Égypte", iso: "EGY", searchTerm: "égypte" },
+    { keywords: ["pakistan", "islamabad"], name: "Pakistan", iso: "PAK", searchTerm: "pakistan" },
+  ];
 
-  const geoCounts: Record<string, number> = {};
+  const geoCounts: Record<string, { count: number; iso: string; searchTerm: string }> = {};
   videos.forEach((v) => {
     const combinedText = `${v.title} ${v.tags.join(" ")} ${v.description}`.toLowerCase();
-    geoKeywords.forEach((region, keyword) => {
-      if (combinedText.includes(keyword)) {
-        geoCounts[region] = (geoCounts[region] || 0) + 1;
+    geoKeywords.forEach((geo) => {
+      const matched = geo.keywords.some((kw) => combinedText.includes(kw));
+      if (matched) {
+        if (!geoCounts[geo.name]) geoCounts[geo.name] = { count: 0, iso: geo.iso, searchTerm: geo.searchTerm };
+        geoCounts[geo.name].count++;
       }
     });
   });
 
   const geoData = Object.entries(geoCounts)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 20)
-    .map(([region, count]) => ({ region, count, percentage: ((count / totalVideos) * 100).toFixed(1) }));
+    .sort(([, a], [, b]) => b.count - a.count)
+    .map(([region, data]) => ({
+      region,
+      count: data.count,
+      iso: data.iso,
+      searchTerm: data.searchTerm,
+      percentage: ((data.count / totalVideos) * 100).toFixed(1),
+    }));
 
   return NextResponse.json({
     stats: { totalVideos, totalViews, totalLikes, totalComments, avgViews, totalHours, firstDate, lastDate },
