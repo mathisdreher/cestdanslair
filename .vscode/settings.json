@@ -1,0 +1,14 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd /workspaces/cestdanslair && python fix_csv\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "npm install": true,
+        "yes": true,
+        "/^mkdir -p /workspaces/cestdanslair/webapp/src/data && cp /workspaces/cestdanslair/cdanslair_videos\\.csv /workspaces/cestdanslair/webapp/src/data/$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

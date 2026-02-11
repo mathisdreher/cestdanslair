@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadVideos } from "@/lib/data";
+import { loadVideos, SKIP_TAGS } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     comment_count: v.comment_count,
     url: v.url,
     thumbnail_url: v.thumbnail_url,
-    tags: v.tags.slice(0, 5),
+    tags: v.tags.filter((t) => !SKIP_TAGS.has(t.toLowerCase().trim())).slice(0, 5),
   }));
 
   return NextResponse.json({

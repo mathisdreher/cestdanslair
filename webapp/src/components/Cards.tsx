@@ -6,7 +6,7 @@ interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
-  icon: string;
+  icon?: string;
 }
 
 export function StatCard({ title, value, subtitle, icon }: StatCardProps) {

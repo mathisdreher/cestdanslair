@@ -28,7 +28,7 @@ export function loadVideos(): Video[] {
     relax_column_count: true,
   });
 
-  return records.map((record: Record<string, string>) => ({
+  return (records as Record<string, string>[]).map((record) => ({
     video_id: record.video_id,
     title: record.title,
     published_at: record.published_at,
@@ -60,3 +60,17 @@ export function parseDuration(duration: string): number {
   }
   return 0;
 }
+
+/** Tags to exclude from insights — show name, hosts, and generic/useless words */
+export const SKIP_TAGS = new Set([
+  // Show & channel
+  "c dans l'air", "c dans l'air", "cdanslair", "cdl", "#cdanslair",
+  "france 5", "france 2", "émission", "tv",
+  // Hosts
+  "caroline roux", "aurélie casse", "salhia brakhlia",
+  "axel de tarlé", "axel tarlé", "bruce toussaint",
+  // Generic / useless
+  "actu", "actualité", "news", "direct",
+  "politique", "économie", "economie", "société", "débat",
+  "géopolitique", "france",
+]);
