@@ -74,3 +74,8 @@ export const SKIP_TAGS = new Set([
   "politique", "économie", "economie", "société", "débat",
   "géopolitique", "france",
 ]);
+
+/** Remove accents from string for accent-agnostic search */
+export function removeAccents(str: string): string {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}

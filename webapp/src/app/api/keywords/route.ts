@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadVideos, getMonthFromDate, getYearFromDate } from "@/lib/data";
+import { loadVideos, getMonthFromDate, getYearFromDate, removeAccents } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   // Support multiple keywords via comma separation
@@ -56,11 +56,12 @@ export async function GET(request: NextRequest) {
     const monthlyMap: Record<string, number> = {};
     const yearlyMap: Record<number, { count: number; views: number }> = {};
     const matchedIds = new Set<string>();
+    const normalizedKeyword = removeAccents(keyword);
 
     videos.forEach((v) => {
-      const inTitle = v.title.toLowerCase().includes(keyword);
-      const inTags = v.tags.some((t) => t.toLowerCase().includes(keyword));
-      const inDescription = v.description.toLowerCase().includes(keyword);
+      const inTitle = removeAccents(v.title.toLowerCase()).includes(normalizedKeyword);
+      const inTags = v.tags.some((t) => removeAccents(t.toLowerCase()).includes(normalizedKeyword));
+      const inDescription = removeAccents(v.description.toLowerCase()).includes(normalizedKeyword);
 
       if (inTitle || inTags || inDescription) {
         matchedIds.add(v.video_id);
@@ -129,9 +130,10 @@ export async function GET(request: NextRequest) {
     .map((v) => {
       // Tag which keywords matched
       const matchedKeywords = keywords.filter((kw) => {
-        const inTitle = v.title.toLowerCase().includes(kw);
-        const inTags = v.tags.some((t) => t.toLowerCase().includes(kw));
-        const inDescription = v.description.toLowerCase().includes(kw);
+        const normalizedKw = removeAccents(kw);
+        const inTitle = removeAccents(v.title.toLowerCase()).includes(normalizedKw);
+        const inTags = v.tags.some((t) => removeAccents(t.toLowerCase()).includes(normalizedKw));
+        const inDescription = removeAccents(v.description.toLowerCase()).includes(normalizedKw);
         return inTitle || inTags || inDescription;
       });
       return {

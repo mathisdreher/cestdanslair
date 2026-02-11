@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadVideos, SKIP_TAGS } from "@/lib/data";
+import { loadVideos, SKIP_TAGS, removeAccents } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
@@ -12,10 +12,11 @@ export async function GET(request: NextRequest) {
 
   // Filter
   if (search) {
+    const normalizedSearch = removeAccents(search);
     videos = videos.filter(
       (v) =>
-        v.title.toLowerCase().includes(search) ||
-        v.tags.some((t) => t.toLowerCase().includes(search))
+        removeAccents(v.title.toLowerCase()).includes(normalizedSearch) ||
+        v.tags.some((t) => removeAccents(t.toLowerCase()).includes(normalizedSearch))
     );
   }
 
