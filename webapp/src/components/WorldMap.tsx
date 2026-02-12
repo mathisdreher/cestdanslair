@@ -9,7 +9,7 @@ import {
   ZoomableGroup,
 } from "react-simple-maps";
 
-const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 
 interface GeoEntry {
   region: string;
@@ -28,10 +28,10 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   FRA: "250", USA: "840", CHN: "156", RUS: "643", UKR: "804",
   DEU: "276", GBR: "826", ITA: "380", ESP: "724", IRN: "364",
   ISR: "376", PSE: "275", SYR: "760", TUR: "792", JPN: "392",
-  KOR: "410", IND: "356", BRA: "076", MEX: "484", CAN: "124",
+  KOR: "410", PRK: "408", IND: "356", BRA: "076", MEX: "484", CAN: "124",
   AUS: "036", DZA: "012", MAR: "504", TUN: "788", LBN: "422",
   IRQ: "368", AFG: "004", GRL: "304", POL: "616", GRC: "300",
-  BEL: "056", LBY: "434", MLI: "466", NER: "562", SDN: "736",
+  BEL: "056", LBY: "434", MLI: "466", NER: "562", SDN: "729",
   VEN: "862", SAU: "682", QAT: "634", EGY: "818", PAK: "586",
 };
 
@@ -59,10 +59,16 @@ export default function WorldMap({ geoData }: WorldMapProps) {
     const dataMap: Record<string, GeoEntry> = {};
     let max = 0;
     geoData.forEach((g) => {
-      const numeric = ISO3_TO_NUMERIC[g.iso];
-      if (numeric) {
-        countMap[numeric] = g.count;
-        dataMap[numeric] = g;
+      const numerics = ISO3_TO_NUMERIC[g.iso];
+      if (numerics) {
+        // Some ISOs map to multiple numeric codes (e.g. Corée → both Koreas)
+        const codes = [numerics];
+        // For Corée, also map to North Korea
+        if (g.iso === "KOR") codes.push("408");
+        codes.forEach((numeric) => {
+          countMap[numeric] = g.count;
+          dataMap[numeric] = g;
+        });
         if (g.count > max) max = g.count;
       }
     });
@@ -85,7 +91,7 @@ export default function WorldMap({ geoData }: WorldMapProps) {
             <Geographies geography={GEO_URL}>
               {({ geographies }) =>
                 geographies.map((geo) => {
-                  const numericId = geo.id;
+                  const numericId = String(geo.id);
                   const count = countByNumeric[numericId] || 0;
                   const entry = dataByNumeric[numericId];
                   const fill = count > 0 ? getColor(count, maxCount) : "#141d2f";

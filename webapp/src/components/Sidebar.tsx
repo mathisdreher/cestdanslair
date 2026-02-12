@@ -21,7 +21,10 @@ export default function Sidebar() {
           C dans l&apos;air
         </h1>
         <p className="text-xs mt-1 tracking-wide uppercase" style={{ color: "var(--muted)" }}>
-          Analyse de données
+          2026-02-12
+        </p>
+        <p className="text-xs mt-1 tracking-wide uppercase" style={{ color: "var(--muted)" }}>
+          v 1.0.0 
         </p>
       </div>
       <nav className="flex-1 p-4 space-y-1">

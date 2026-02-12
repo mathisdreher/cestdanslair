@@ -16,14 +16,12 @@ interface DashboardData {
     totalComments: number; avgViews: number; totalHours: number;
     firstDate: string; lastDate: string;
   };
-  monthly: { month: string; count: number; views: number }[];
   yearly: {
     year: number; count: number; views: number; likes: number;
     comments: number; avgViews: number; engagement: number; hoursOfContent: number;
   }[];
   durationDistribution: { range: string; count: number }[];
   topVideos: { title: string; views: number; likes: number; comments: number; published_at: string; url: string }[];
-  bestMonths: { month: string; views: number; count: number }[];
   topTags: { tag: string; count: number }[];
   geoData: { region: string; count: number; iso: string; searchTerm: string; percentage: string }[];
 }
@@ -35,7 +33,6 @@ const formatNum = (n: number) => n >= 1e9 ? (n / 1e9).toFixed(1) + "B" : n >= 1e
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [hiddenYearly, setHiddenYearly] = useState<Set<string>>(new Set());
-  const [hiddenMonthly, setHiddenMonthly] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch("/api/dashboard").then((r) => r.json()).then(setData);
@@ -49,17 +46,13 @@ export default function DashboardPage() {
 
   if (!data) return <div className="p-8 text-muted">Chargement...</div>;
 
-  const { stats, monthly, yearly, durationDistribution, topVideos, bestMonths, topTags, geoData } = data;
+  const { stats, yearly, durationDistribution, topVideos, topTags, geoData } = data;
   const firstYear = new Date(stats.firstDate).getFullYear();
   const lastYear = new Date(stats.lastDate).getFullYear();
 
   const yearlySeries = [
     { key: "avgViews", name: "Vues moyennes", color: COLORS[1] },
     { key: "engagement", name: "Engagement %", color: COLORS[2] },
-  ];
-
-  const monthlySeries = [
-    { key: "views", name: "Vues totales", color: COLORS[3] },
   ];
 
   const CustomLegend = ({ series, hidden, toggle }: { series: typeof yearlySeries; hidden: Set<string>; toggle: (k: string) => void }) => (
@@ -81,7 +74,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">C dans l&apos;air — Tableau de bord</h1>
+        <h1 className="text-3xl font-bold">Tableau de bord</h1>
         <p className="text-muted mt-1">{firstYear} – 2025 · {stats.totalVideos.toLocaleString("fr")} épisodes analysés</p>
       </div>
 
@@ -89,10 +82,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard title="Épisodes" value={stats.totalVideos.toLocaleString("fr")} />
         <StatCard title="Vues totales" value={formatNum(stats.totalViews)} />
-        <StatCard title="Vues moyennes" value={formatNum(stats.avgViews)} />
         <StatCard title="Heures de contenu" value={stats.totalHours.toLocaleString("fr") + "h"} />
         <StatCard title="Likes totaux" value={formatNum(stats.totalLikes)} />
         <StatCard title="Commentaires" value={formatNum(stats.totalComments)} />
+        <StatCard title="Engagement moy." value={((stats.totalLikes + stats.totalComments) / stats.totalViews * 100).toFixed(2) + "%"} />
         <StatCard title="Premier épisode" value={new Date(stats.firstDate).toLocaleDateString("fr")} />
         <StatCard title="Dernier épisode" value={new Date(stats.lastDate).toLocaleDateString("fr")} />
       </div>
@@ -122,37 +115,6 @@ export default function DashboardPage() {
               !hiddenYearly.has(s.key) && (
                 <Area key={s.key} type="monotone" dataKey={s.key} name={s.name}
                   stroke={s.color} fill={`url(#grad-${s.key})`} strokeWidth={2} dot={{ r: 3 }} />
-              )
-            ))}
-          </AreaChart>
-        </ResponsiveContainer>
-      </ChartContainer>
-
-      {/* Monthly timeline */}
-      <ChartContainer title="Timeline mensuelle">
-        <CustomLegend series={monthlySeries} hidden={hiddenMonthly} toggle={(k) => toggleSeries(hiddenMonthly, setHiddenMonthly, k)} />
-        <ResponsiveContainer width="100%" height={320}>
-          <AreaChart data={monthly}>
-            <defs>
-              {monthlySeries.map((s) => (
-                <linearGradient key={s.key} id={`gradm-${s.key}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={s.color} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={s.color} stopOpacity={0} />
-                </linearGradient>
-              ))}
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
-            <XAxis dataKey="month" stroke="#8896b3" tickFormatter={(v) => v.slice(0, 7)} interval={11} />
-            <YAxis stroke="#8896b3" tickFormatter={(v) => formatNum(v)} />
-            <Tooltip
-              contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }}
-              labelStyle={{ color: "#f8fafc" }}
-              formatter={(value, name) => [formatNum(Number(value ?? 0)), String(name)]}
-            />
-            {monthlySeries.map((s) => (
-              !hiddenMonthly.has(s.key) && (
-                <Area key={s.key} type="monotone" dataKey={s.key} name={s.name}
-                  stroke={s.color} fill={`url(#gradm-${s.key})`} strokeWidth={1.5} dot={false} />
               )
             ))}
           </AreaChart>
@@ -237,22 +199,8 @@ export default function DashboardPage() {
         <WorldMap geoData={geoData} />
       </ChartContainer>
 
-      {/* Best months */}
-      <ChartContainer title="🏆 Mois les plus vus">
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-          {bestMonths.map((m, i) => (
-            <div key={m.month} className="rounded-lg border p-4 text-center" style={{ borderColor: "var(--card-border)", background: "var(--card-bg)" }}>
-              <div className="text-xs" style={{ color: "var(--muted)" }}>#{i + 1}</div>
-              <div className="text-lg font-semibold mt-1">{m.month}</div>
-              <div className="font-bold" style={{ color: "var(--accent-light)" }}>{formatNum(m.views)} vues</div>
-              <div className="text-sm" style={{ color: "var(--muted)" }}>{m.count} épisodes</div>
-            </div>
-          ))}
-        </div>
-      </ChartContainer>
-
       {/* Top 20 videos */}
-      <ChartContainer title="Top 20 — Épisodes les plus vus">
+      <ChartContainer title="Top 20 — Épisodes les plus populaires">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

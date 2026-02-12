@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { loadVideos, getYearFromDate, getMonthFromDate, parseDuration, SKIP_TAGS } from "@/lib/data";
+import { loadVideos, getYearFromDate, parseDuration, SKIP_TAGS } from "@/lib/data";
 
 export async function GET() {
   const videos = loadVideos();
@@ -15,18 +15,6 @@ export async function GET() {
   const dates = videos.map((v) => new Date(v.published_at).getTime());
   const firstDate = new Date(Math.min(...dates)).toISOString();
   const lastDate = new Date(Math.max(...dates)).toISOString();
-
-  // Videos per month
-  const monthlyMap: Record<string, { count: number; views: number }> = {};
-  videos.forEach((v) => {
-    const month = getMonthFromDate(v.published_at);
-    if (!monthlyMap[month]) monthlyMap[month] = { count: 0, views: 0 };
-    monthlyMap[month].count++;
-    monthlyMap[month].views += v.view_count;
-  });
-  const monthly = Object.entries(monthlyMap)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([month, data]) => ({ month, ...data }));
 
   // Videos per year (with all metrics)
   const yearlyMap: Record<number, { count: number; views: number; likes: number; comments: number; totalDuration: number }> = {};
@@ -75,9 +63,6 @@ export async function GET() {
       published_at: v.published_at,
       url: v.url,
     }));
-
-  // Best months (most views)
-  const bestMonths = [...monthly].sort((a, b) => b.views - a.views).slice(0, 5);
 
   // Top tags (quick overview)
   const tagCounts: Record<string, number> = {};
@@ -161,11 +146,9 @@ export async function GET() {
 
   return NextResponse.json({
     stats: { totalVideos, totalViews, totalLikes, totalComments, avgViews, totalHours, firstDate, lastDate },
-    monthly,
     yearly,
     durationDistribution,
     topVideos,
-    bestMonths,
     topTags,
     geoData,
   });
