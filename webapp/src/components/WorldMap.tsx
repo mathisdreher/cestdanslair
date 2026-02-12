@@ -33,6 +33,16 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   IRQ: "368", AFG: "004", GRL: "304", POL: "616", GRC: "300",
   BEL: "056", LBY: "434", MLI: "466", NER: "562", SDN: "729",
   VEN: "862", SAU: "682", QAT: "634", EGY: "818", PAK: "586",
+  // New countries
+  FIN: "246", ARG: "032", SWE: "752", PRT: "620", NLD: "528",
+  AUT: "040", HUN: "348", IRL: "372", ROU: "642", SRB: "688",
+  HRV: "191", NOR: "578", DNK: "208", CHE: "756", CZE: "203",
+  COL: "170", CHL: "152", PER: "604", CUB: "192", ETH: "231",
+  NGA: "566", SEN: "686", CMR: "120", KEN: "404", GEO: "268",
+  BLR: "112", MDA: "498", TWN: "158", MMR: "104", THA: "764",
+  VNM: "704", KHM: "116", PHL: "608", IDN: "360", YEM: "887",
+  JOR: "400", ARE: "784", BFA: "854", MDG: "450", CIV: "384",
+  CAF: "140", SOM: "706", BOL: "068",
 };
 
 function getColor(count: number, maxCount: number): string {

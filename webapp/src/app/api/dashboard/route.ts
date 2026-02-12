@@ -120,13 +120,62 @@ export async function GET() {
     { keywords: ["qatar", "doha"], name: "Qatar", iso: "QAT", searchTerm: "qatar" },
     { keywords: ["égypte", "egypte", "caire"], name: "Égypte", iso: "EGY", searchTerm: "égypte" },
     { keywords: ["pakistan", "islamabad"], name: "Pakistan", iso: "PAK", searchTerm: "pakistan" },
+    { keywords: ["finlande", "helsinki"], name: "Finlande", iso: "FIN", searchTerm: "finlande" },
+    { keywords: ["argentine", "buenos aires", "milei"], name: "Argentine", iso: "ARG", searchTerm: "argentine" },
+    { keywords: ["suède", "suede", "stockholm"], name: "Suède", iso: "SWE", searchTerm: "suède" },
+    { keywords: ["portugal", "lisbonne"], name: "Portugal", iso: "PRT", searchTerm: "portugal" },
+    { keywords: ["pays-bas", "pays bas", "hollande", "amsterdam"], name: "Pays-Bas", iso: "NLD", searchTerm: "pays-bas" },
+    { keywords: ["autriche", "vienne"], name: "Autriche", iso: "AUT", searchTerm: "autriche" },
+    { keywords: ["hongrie", "budapest", "orban"], name: "Hongrie", iso: "HUN", searchTerm: "hongrie" },
+    { keywords: ["irlande", "dublin"], name: "Irlande", iso: "IRL", searchTerm: "irlande" },
+    { keywords: ["roumanie", "bucarest"], name: "Roumanie", iso: "ROU", searchTerm: "roumanie" },
+    { keywords: ["serbie", "belgrade"], name: "Serbie", iso: "SRB", searchTerm: "serbie" },
+    { keywords: ["croatie", "zagreb"], name: "Croatie", iso: "HRV", searchTerm: "croatie" },
+    { keywords: ["norvège", "norvege", "oslo"], name: "Norvège", iso: "NOR", searchTerm: "norvège" },
+    { keywords: ["danemark", "copenhague"], name: "Danemark", iso: "DNK", searchTerm: "danemark" },
+    { keywords: ["suisse", "berne", "genève"], name: "Suisse", iso: "CHE", searchTerm: "suisse" },
+    { keywords: ["tchéquie", "tchequie", "prague", "république tchèque"], name: "Tchéquie", iso: "CZE", searchTerm: "prague" },
+    { keywords: ["colombie", "bogota"], name: "Colombie", iso: "COL", searchTerm: "colombie" },
+    { keywords: ["chili", "santiago"], name: "Chili", iso: "CHL", searchTerm: "chili" },
+    { keywords: ["pérou", "perou", "lima"], name: "Pérou", iso: "PER", searchTerm: "pérou" },
+    { keywords: ["cuba", "havane"], name: "Cuba", iso: "CUB", searchTerm: "cuba" },
+    { keywords: ["éthiopie", "ethiopie", "addis"], name: "Éthiopie", iso: "ETH", searchTerm: "éthiopie" },
+    { keywords: ["nigeria", "abuja", "lagos"], name: "Nigeria", iso: "NGA", searchTerm: "nigeria" },
+    { keywords: ["sénégal", "senegal", "dakar"], name: "Sénégal", iso: "SEN", searchTerm: "sénégal" },
+    { keywords: ["cameroun", "yaoundé"], name: "Cameroun", iso: "CMR", searchTerm: "cameroun" },
+    { keywords: ["kenya", "nairobi"], name: "Kenya", iso: "KEN", searchTerm: "kenya" },
+    { keywords: ["géorgie", "georgie", "tbilissi"], name: "Géorgie", iso: "GEO", searchTerm: "géorgie" },
+    { keywords: ["biélorussie", "bielorussie", "belarus", "minsk", "loukachenko"], name: "Biélorussie", iso: "BLR", searchTerm: "biélorussie" },
+    { keywords: ["moldavie", "chisinau"], name: "Moldavie", iso: "MDA", searchTerm: "moldavie" },
+    { keywords: ["taïwan", "taiwan", "taipei"], name: "Taïwan", iso: "TWN", searchTerm: "taïwan" },
+    { keywords: ["birmanie", "myanmar"], name: "Birmanie", iso: "MMR", searchTerm: "birmanie" },
+    { keywords: ["thaïlande", "thailande", "bangkok"], name: "Thaïlande", iso: "THA", searchTerm: "thaïlande" },
+    { keywords: ["vietnam", "hanoï", "hanoi"], name: "Vietnam", iso: "VNM", searchTerm: "vietnam" },
+    { keywords: ["cambodge", "phnom penh"], name: "Cambodge", iso: "KHM", searchTerm: "cambodge" },
+    { keywords: ["philippines", "manille"], name: "Philippines", iso: "PHL", searchTerm: "philippines" },
+    { keywords: ["indonésie", "indonesie", "jakarta"], name: "Indonésie", iso: "IDN", searchTerm: "indonésie" },
+    { keywords: ["yémen", "yemen", "sanaa", "houthis", "houthi"], name: "Yémen", iso: "YEM", searchTerm: "yémen" },
+    { keywords: ["jordanie", "amman"], name: "Jordanie", iso: "JOR", searchTerm: "jordanie" },
+    { keywords: ["émirats", "emirats", "dubaï", "dubai", "abu dhabi"], name: "Émirats arabes unis", iso: "ARE", searchTerm: "émirats" },
+    { keywords: ["burkina faso", "ouagadougou"], name: "Burkina Faso", iso: "BFA", searchTerm: "burkina faso" },
+    { keywords: ["madagascar", "antananarivo"], name: "Madagascar", iso: "MDG", searchTerm: "madagascar" },
+    { keywords: ["côte d'ivoire", "cote d'ivoire", "abidjan"], name: "Côte d'Ivoire", iso: "CIV", searchTerm: "côte d'ivoire" },
+    { keywords: ["centrafrique", "bangui", "centrafricaine"], name: "Centrafrique", iso: "CAF", searchTerm: "centrafrique" },
+    { keywords: ["somalie", "mogadiscio"], name: "Somalie", iso: "SOM", searchTerm: "somalie" },
+    { keywords: ["bolivie", "la paz"], name: "Bolivie", iso: "BOL", searchTerm: "bolivie" },
   ];
 
   const geoCounts: Record<string, { count: number; iso: string; searchTerm: string }> = {};
+  // Pre-compile regexes with word boundaries to avoid false positives
+  // (e.g. "lima" in "climat", "mali" in "anomalie", "niger" in "nigeria")
+  const geoRegexes = geoKeywords.map((geo) => ({
+    ...geo,
+    patterns: geo.keywords.map((kw) => new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i")),
+  }));
   videos.forEach((v) => {
     const combinedText = `${v.title} ${v.tags.join(" ")} ${v.description}`.toLowerCase();
-    geoKeywords.forEach((geo) => {
-      const matched = geo.keywords.some((kw) => combinedText.includes(kw));
+    geoRegexes.forEach((geo) => {
+      const matched = geo.patterns.some((re) => re.test(combinedText));
       if (matched) {
         if (!geoCounts[geo.name]) geoCounts[geo.name] = { count: 0, iso: geo.iso, searchTerm: geo.searchTerm };
         geoCounts[geo.name].count++;
