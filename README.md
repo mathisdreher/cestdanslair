@@ -197,3 +197,8 @@ France, États-Unis, Chine, Russie, Ukraine, Allemagne, Royaume-Uni, Italie, Esp
 ## Licence
 
 Projet personnel — données collectées depuis la chaîne YouTube publique de C dans l'air.
+---
+
+## Licence
+
+Distribué sous la licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
