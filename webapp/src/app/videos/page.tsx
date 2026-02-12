@@ -86,9 +86,9 @@ function VideosContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-1">Video Explorer</h2>
+        <h2 className="text-2xl font-bold mb-1">Explorateur vidéo</h2>
         <p style={{ color: "var(--muted)" }}>
-          Browse and search all episodes {data ? `(${data.total} results)` : ""}
+          Parcourir et rechercher tous les épisodes {data ? `(${data.total} résultats)` : ""}
         </p>
       </div>
 
@@ -97,8 +97,8 @@ function VideosContent() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search videos by title or tags..."
-          className="flex-1 px-4 py-3 rounded-lg border text-sm outline-none focus:ring-2"
+          placeholder="Rechercher par titre ou tags..."
+          className="flex-1 px-4 py-3 rounded-lg border text-sm outline-none focus:ring-2 focus:ring-[var(--accent)]"
           style={{ background: "var(--card-bg)", borderColor: "var(--card-border)", color: "var(--foreground)" }}
         />
         <button
@@ -106,7 +106,7 @@ function VideosContent() {
           className="px-6 py-3 rounded-lg font-medium text-sm text-white"
           style={{ background: "var(--accent)" }}
         >
-          Search
+          Rechercher
         </button>
       </form>
 
@@ -118,7 +118,7 @@ function VideosContent() {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ background: "rgba(0,0,0,0.2)" }}>
-                <th className="text-left py-3 px-4" style={{ color: "var(--muted)" }}>Title</th>
+                <th className="text-left py-3 px-4" style={{ color: "var(--muted)" }}>Titre</th>
                 <th
                   className="text-right py-3 px-4 cursor-pointer select-none"
                   style={{ color: "var(--muted)" }}
@@ -126,13 +126,13 @@ function VideosContent() {
                 >
                   Date <SortIcon field="date" />
                 </th>
-                <th className="text-right py-3 px-4" style={{ color: "var(--muted)" }}>Duration</th>
+                <th className="text-right py-3 px-4" style={{ color: "var(--muted)" }}>Durée</th>
                 <th
                   className="text-right py-3 px-4 cursor-pointer select-none"
                   style={{ color: "var(--muted)" }}
                   onClick={() => toggleSort("views")}
                 >
-                  Views <SortIcon field="views" />
+                  Vues <SortIcon field="views" />
                 </th>
                 <th
                   className="text-right py-3 px-4 cursor-pointer select-none"
@@ -146,7 +146,7 @@ function VideosContent() {
                   style={{ color: "var(--muted)" }}
                   onClick={() => toggleSort("comments")}
                 >
-                  Comments <SortIcon field="comments" />
+                  Commentaires <SortIcon field="comments" />
                 </th>
               </tr>
             </thead>
@@ -155,6 +155,12 @@ function VideosContent() {
                 <tr>
                   <td colSpan={6} className="text-center py-10" style={{ color: "var(--muted)" }}>
                     Loading...
+                  </td>
+                </tr>
+              ) : data?.videos.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-10" style={{ color: "var(--muted)" }}>
+                    Aucun résultat trouvé
                   </td>
                 </tr>
               ) : (
@@ -211,7 +217,7 @@ function VideosContent() {
             style={{ borderColor: "var(--card-border)" }}
           >
             <p className="text-sm" style={{ color: "var(--muted)" }}>
-              Page {data.page} of {data.totalPages}
+              Page {data.page} sur {data.totalPages}
             </p>
             <div className="flex gap-2">
               <button
@@ -220,7 +226,7 @@ function VideosContent() {
                 className="px-3 py-1 rounded border text-sm disabled:opacity-30"
                 style={{ borderColor: "var(--card-border)", color: "var(--foreground)" }}
               >
-                Previous
+                Précédent
               </button>
               <button
                 onClick={() => setPage(Math.min(data.totalPages, page + 1))}
@@ -228,7 +234,7 @@ function VideosContent() {
                 className="px-3 py-1 rounded border text-sm disabled:opacity-30"
                 style={{ borderColor: "var(--card-border)", color: "var(--foreground)" }}
               >
-                Next
+                Suivant
               </button>
             </div>
           </div>

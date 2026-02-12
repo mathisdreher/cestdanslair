@@ -12,20 +12,23 @@ interface StatCardProps {
 export function StatCard({ title, value, subtitle, icon }: StatCardProps) {
   return (
     <div
-      className="rounded-xl p-6 border"
-      style={{ background: "var(--card-bg)", borderColor: "var(--card-border)" }}
+      className="rounded-xl p-5 border backdrop-blur-sm"
+      style={{
+        background: "linear-gradient(135deg, var(--card-bg) 0%, rgba(99, 102, 241, 0.04) 100%)",
+        borderColor: "var(--card-border)",
+      }}
     >
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium" style={{ color: "var(--muted)" }}>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--muted)" }}>
           {title}
         </span>
-        <span className="text-2xl">{icon}</span>
+        {icon && <span className="text-xl opacity-70">{icon}</span>}
       </div>
-      <p className="text-3xl font-bold" style={{ color: "var(--foreground)" }}>
+      <p className="text-2xl font-bold tracking-tight" style={{ color: "var(--foreground)" }}>
         {typeof value === "number" ? value.toLocaleString("fr-FR") : value}
       </p>
       {subtitle && (
-        <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>
+        <p className="text-xs mt-2" style={{ color: "var(--muted)" }}>
           {subtitle}
         </p>
       )}

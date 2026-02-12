@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: "📊" },
-  { href: "/keywords", label: "Keyword Search", icon: "🔍" },
-  { href: "/topics", label: "Topics by Year", icon: "📅" },
-  { href: "/videos", label: "Video Explorer", icon: "🎬" },
+  { href: "/", label: "Tableau de bord", icon: "📊" },
+  { href: "/keywords", label: "Recherche par mot-clé", icon: "🔍" },
+  { href: "/topics", label: "Sujets par année", icon: "📅" },
+  { href: "/videos", label: "Explorateur vidéo", icon: "🎬" },
 ];
 
 export default function Sidebar() {
@@ -17,11 +17,11 @@ export default function Sidebar() {
     <aside className="fixed left-0 top-0 h-screen w-64 flex flex-col border-r"
       style={{ background: "var(--card-bg)", borderColor: "var(--card-border)" }}>
       <div className="p-6 border-b" style={{ borderColor: "var(--card-border)" }}>
-        <h1 className="text-xl font-bold" style={{ color: "var(--accent-light)" }}>
+        <h1 className="text-xl font-bold bg-gradient-to-r from-[var(--gradient-start)] to-[var(--gradient-end)] bg-clip-text text-transparent">
           C dans l&apos;air
         </h1>
-        <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>
-          Analytics Dashboard
+        <p className="text-xs mt-1 tracking-wide uppercase" style={{ color: "var(--muted)" }}>
+          Analyse de données
         </p>
       </div>
       <nav className="flex-1 p-4 space-y-1">
@@ -31,7 +31,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${
                 isActive
                   ? "text-white"
                   : "hover:text-white"
@@ -48,8 +48,8 @@ export default function Sidebar() {
         })}
       </nav>
       <div className="p-4 border-t text-xs" style={{ borderColor: "var(--card-border)", color: "var(--muted)" }}>
-        <p>France 5 · YouTube Channel</p>
-        <p className="mt-1">Data analysis tool</p>
+        <p>France 5 · Chaîne YouTube</p>
+        <p className="mt-1">Outil d&apos;analyse de données</p>
       </div>
     </aside>
   );

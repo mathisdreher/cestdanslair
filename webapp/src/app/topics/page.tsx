@@ -8,10 +8,10 @@ import {
 import { ChartContainer } from "@/components/Cards";
 
 const TAG_COLORS = [
-  "#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#22c55e",
-  "#06b6d4", "#f43f5e", "#a855f7", "#14b8a6", "#fb923c",
-  "#84cc16", "#e879f9", "#38bdf8", "#fbbf24", "#4ade80",
-  "#f97316", "#6366f1", "#d946ef", "#0ea5e9", "#10b981",
+  "#6366f1", "#a78bfa", "#f472b6", "#fbbf24", "#34d399",
+  "#22d3ee", "#f87171", "#c084fc", "#2dd4bf", "#fb923c",
+  "#a3e635", "#e879f9", "#38bdf8", "#facc15", "#4ade80",
+  "#f97316", "#818cf8", "#d946ef", "#0ea5e9", "#34d399",
 ];
 
 interface TrendItem {
@@ -93,16 +93,16 @@ export default function TopicsPage() {
   }, [data]);
 
   const heatColor = (count: number) => {
-    if (count === 0) return "rgba(59, 130, 246, 0.05)";
+    if (count === 0) return "rgba(99, 102, 241, 0.05)";
     const intensity = Math.min(count / maxHeatmapValue, 1);
     const alpha = 0.15 + intensity * 0.85;
-    return `rgba(59, 130, 246, ${alpha})`;
+    return `rgba(99, 102, 241, ${alpha})`;
   };
 
   if (loading && !data) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-lg" style={{ color: "var(--muted)" }}>Loading topics...</div>
+        <div className="text-lg" style={{ color: "var(--muted)" }}>Chargement des sujets...</div>
       </div>
     );
   }
@@ -113,20 +113,20 @@ export default function TopicsPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold mb-1">Topic Analysis</h2>
+          <h2 className="text-2xl font-bold mb-1">Analyse des sujets</h2>
           <p style={{ color: "var(--muted)" }}>
             {selectedYear
-              ? `Topics in ${selectedYear}`
+              ? `Sujets en ${selectedYear}`
               : selectedYears.size > 0
-                ? `Comparing ${Array.from(selectedYears).sort().join(", ")}`
-                : "All-time topic analysis"} — {data.totalVideos} episodes
+                ? `Comparaison : ${Array.from(selectedYears).sort().join(", ")}`
+                : "Analyse de tous les sujets"} — {data.totalVideos} épisodes
           </p>
         </div>
       </div>
 
       {/* Year selection pills */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs py-1" style={{ color: "var(--muted)" }}>Years:</span>
+        <span className="text-xs py-1" style={{ color: "var(--muted)" }}>Années :</span>
         <button
           onClick={() => { setSelectedYear(""); setSelectedYears(new Set()); }}
           className="px-3 py-1.5 rounded text-xs font-medium border transition-all"
@@ -136,7 +136,7 @@ export default function TopicsPage() {
             color: selectedYear === "" && selectedYears.size === 0 ? "white" : "var(--muted)",
           }}
         >
-          All
+          Toutes
         </button>
         {data.years.map((y) => (
           <button
@@ -166,25 +166,25 @@ export default function TopicsPage() {
       {data.trending.comparedYears[0] && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ChartContainer
-            title="📈 Rising Topics"
-            subtitle={`Growing from ${data.trending.comparedYears[0]} to ${data.trending.comparedYears[1]}`}
+            title="📈 Sujets en hausse"
+            subtitle={`En croissance de ${data.trending.comparedYears[0]} à ${data.trending.comparedYears[1]}`}
           >
             {data.trending.rising.length === 0 ? (
-              <p className="text-sm py-4" style={{ color: "var(--muted)" }}>No significantly rising topics</p>
+              <p className="text-sm py-4" style={{ color: "var(--muted)" }}>Aucun sujet en hausse significative</p>
             ) : (
               <div className="space-y-2">
                 {data.trending.rising.map((t) => (
                   <div key={t.tag} className="flex items-center gap-3">
                     <span className="text-sm font-medium w-40 truncate">{t.tag}</span>
-                    <div className="flex-1 h-6 rounded-full overflow-hidden" style={{ background: "rgba(34, 197, 94, 0.1)" }}>
+                    <div className="flex-1 h-6 rounded-full overflow-hidden" style={{ background: "rgba(52, 211, 153, 0.1)" }}>
                       <div
                         className="h-full rounded-full flex items-center px-2"
                         style={{
                           width: `${Math.min(100, Math.abs(t.change))}%`,
-                          background: "rgba(34, 197, 94, 0.3)",
+                          background: "rgba(52, 211, 153, 0.3)",
                         }}
                       >
-                        <span className="text-xs font-bold" style={{ color: "#22c55e" }}>
+                        <span className="text-xs font-bold" style={{ color: "#34d399" }}>
                           +{t.change}%
                         </span>
                       </div>
@@ -199,25 +199,25 @@ export default function TopicsPage() {
           </ChartContainer>
 
           <ChartContainer
-            title="📉 Declining Topics"
-            subtitle={`Falling from ${data.trending.comparedYears[0]} to ${data.trending.comparedYears[1]}`}
+            title="📉 Sujets en baisse"
+            subtitle={`En déclin de ${data.trending.comparedYears[0]} à ${data.trending.comparedYears[1]}`}
           >
             {data.trending.falling.length === 0 ? (
-              <p className="text-sm py-4" style={{ color: "var(--muted)" }}>No significantly declining topics</p>
+              <p className="text-sm py-4" style={{ color: "var(--muted)" }}>Aucun sujet en baisse significative</p>
             ) : (
               <div className="space-y-2">
                 {data.trending.falling.map((t) => (
                   <div key={t.tag} className="flex items-center gap-3">
                     <span className="text-sm font-medium w-40 truncate">{t.tag}</span>
-                    <div className="flex-1 h-6 rounded-full overflow-hidden" style={{ background: "rgba(239, 68, 68, 0.1)" }}>
+                    <div className="flex-1 h-6 rounded-full overflow-hidden" style={{ background: "rgba(248, 113, 113, 0.1)" }}>
                       <div
                         className="h-full rounded-full flex items-center px-2"
                         style={{
                           width: `${Math.min(100, Math.abs(t.change))}%`,
-                          background: "rgba(239, 68, 68, 0.3)",
+                          background: "rgba(248, 113, 113, 0.3)",
                         }}
                       >
-                        <span className="text-xs font-bold" style={{ color: "#ef4444" }}>
+                        <span className="text-xs font-bold" style={{ color: "#f87171" }}>
                           {t.change}%
                         </span>
                       </div>
@@ -234,14 +234,14 @@ export default function TopicsPage() {
       )}
 
       {/* Topic evolution chart with interactive legend */}
-      <ChartContainer title="Topic Evolution" subtitle="Click legend items to show/hide. Double-click to isolate a single topic.">
+      <ChartContainer title="Évolution des sujets" subtitle="Cliquez sur les étiquettes pour afficher/masquer. Double-cliquez pour isoler un sujet.">
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           <button
             onClick={showAllTags}
             className="px-3 py-1 rounded text-xs border transition-all hover:text-white"
             style={{ borderColor: "var(--card-border)", color: "var(--muted)" }}
           >
-            Show all
+            Tout afficher
           </button>
           {data.topTagNames.map((tag, idx) => (
             <button
@@ -273,11 +273,11 @@ export default function TopicsPage() {
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-            <XAxis dataKey="year" stroke="#94a3b8" fontSize={12} />
-            <YAxis stroke="#94a3b8" fontSize={12} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
+            <XAxis dataKey="year" stroke="#8896b3" fontSize={12} />
+            <YAxis stroke="#8896b3" fontSize={12} />
             <Tooltip
-              contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: "8px" }}
+              contentStyle={{ background: "#141d2f", border: "1px solid #1e3050", borderRadius: "8px" }}
               labelStyle={{ color: "#e2e8f0" }}
             />
             {data.topTagNames.map((tag, idx) => (
@@ -299,13 +299,13 @@ export default function TopicsPage() {
       </ChartContainer>
 
       {/* Heatmap */}
-      <ChartContainer title="Topic Heatmap" subtitle="Intensity of each topic per year — darker = more episodes">
+      <ChartContainer title="Carte de chaleur" subtitle="Intensité de chaque sujet par année — plus l'intensité est forte, plus il y a d'épisodes">
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
               <tr>
                 <th className="text-left py-2 px-2 sticky left-0" style={{ background: "var(--card-bg)", color: "var(--muted)" }}>
-                  Topic
+                  Sujet
                 </th>
                 {data.years.map((y) => (
                   <th key={y} className="text-center py-2 px-1 min-w-[50px]" style={{ color: "var(--muted)" }}>
@@ -342,7 +342,7 @@ export default function TopicsPage() {
       </ChartContainer>
 
       {/* Top tags bar chart */}
-      <ChartContainer title="Top Tags Ranking" subtitle="Most frequently used tags">
+      <ChartContainer title="Classement des tags" subtitle="Tags les plus fréquemment utilisés">
         <div className="flex gap-2 mb-4">
           {(["count", "views", "avg"] as const).map((mode) => (
             <button
@@ -355,37 +355,37 @@ export default function TopicsPage() {
                 color: tagSortBy === mode ? "white" : "var(--muted)",
               }}
             >
-              {mode === "count" ? "By Episodes" : mode === "views" ? "By Total Views" : "By Avg Views"}
+              {mode === "count" ? "Par épisodes" : mode === "views" ? "Par vues totales" : "Par vues moy."}
             </button>
           ))}
         </div>
         <ResponsiveContainer width="100%" height={600}>
           <BarChart data={sortedTopTags} layout="vertical" margin={{ left: 160 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
             <XAxis
               type="number"
-              stroke="#94a3b8"
+              stroke="#8896b3"
               fontSize={12}
               tickFormatter={tagSortBy !== "count" ? (v) => `${(v / 1e3).toFixed(0)}k` : undefined}
             />
-            <YAxis type="category" dataKey="tag" stroke="#94a3b8" fontSize={11} width={150} />
+            <YAxis type="category" dataKey="tag" stroke="#8896b3" fontSize={11} width={150} />
             <Tooltip
-              contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: "8px" }}
+              contentStyle={{ background: "#141d2f", border: "1px solid #1e3050", borderRadius: "8px" }}
               labelStyle={{ color: "#e2e8f0" }}
               formatter={(value) => [Number(value ?? 0).toLocaleString("fr-FR")]}
             />
             <Bar
               dataKey={tagSortBy === "count" ? "count" : tagSortBy === "views" ? "views" : "count"}
-              fill="#3b82f6"
+              fill="#6366f1"
               radius={[0, 4, 4, 0]}
-              name={tagSortBy === "count" ? "Episodes" : tagSortBy === "views" ? "Views" : "Avg Views"}
+              name={tagSortBy === "count" ? "Épisodes" : tagSortBy === "views" ? "Vues" : "Vues moy."}
             />
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>
 
       {/* Tags table */}
-      <ChartContainer title="Full Tag Details" subtitle="Complete breakdown with all metrics">
+      <ChartContainer title="Détails complets des tags" subtitle="Répartition complète avec toutes les métriques">
         <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
           <table className="w-full text-sm">
             <thead className="sticky top-0" style={{ background: "var(--card-bg)" }}>
@@ -393,13 +393,13 @@ export default function TopicsPage() {
                 <th className="text-left py-3 px-2">#</th>
                 <th className="text-left py-3 px-2">Tag</th>
                 <th className="text-right py-3 px-2 cursor-pointer" onClick={() => setTagSortBy("count")}>
-                  Episodes {tagSortBy === "count" && "↓"}
+                  Épisodes {tagSortBy === "count" && "↓"}
                 </th>
                 <th className="text-right py-3 px-2 cursor-pointer" onClick={() => setTagSortBy("views")}>
-                  Total Views {tagSortBy === "views" && "↓"}
+                  Vues totales {tagSortBy === "views" && "↓"}
                 </th>
                 <th className="text-right py-3 px-2 cursor-pointer" onClick={() => setTagSortBy("avg")}>
-                  Avg Views {tagSortBy === "avg" && "↓"}
+                  Vues moy. {tagSortBy === "avg" && "↓"}
                 </th>
               </tr>
             </thead>

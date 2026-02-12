@@ -28,8 +28,8 @@ interface DashboardData {
   geoData: { region: string; count: number; iso: string; searchTerm: string; percentage: string }[];
 }
 
-const COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#06b6d4", "#f43f5e", "#84cc16"];
-const PIE_COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981"];
+const COLORS = ["#6366f1", "#a78bfa", "#f472b6", "#fbbf24", "#34d399", "#22d3ee", "#f87171", "#a3e635"];
+const PIE_COLORS = ["#6366f1", "#a78bfa", "#f472b6", "#fbbf24", "#34d399"];
 const formatNum = (n: number) => n >= 1e9 ? (n / 1e9).toFixed(1) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "K" : n.toString();
 
 export default function DashboardPage() {
@@ -110,11 +110,11 @@ export default function DashboardPage() {
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-            <XAxis dataKey="year" stroke="#94a3b8" />
-            <YAxis stroke="#94a3b8" tickFormatter={(v) => formatNum(v)} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
+            <XAxis dataKey="year" stroke="#8896b3" />
+            <YAxis stroke="#8896b3" tickFormatter={(v) => formatNum(v)} />
             <Tooltip
-              contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }}
+              contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }}
               labelStyle={{ color: "#f8fafc" }}
               formatter={(value, name) => [formatNum(Number(value ?? 0)), String(name)]}
             />
@@ -141,11 +141,11 @@ export default function DashboardPage() {
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-            <XAxis dataKey="month" stroke="#94a3b8" tickFormatter={(v) => v.slice(0, 7)} interval={11} />
-            <YAxis stroke="#94a3b8" tickFormatter={(v) => formatNum(v)} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
+            <XAxis dataKey="month" stroke="#8896b3" tickFormatter={(v) => v.slice(0, 7)} interval={11} />
+            <YAxis stroke="#8896b3" tickFormatter={(v) => formatNum(v)} />
             <Tooltip
-              contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }}
+              contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }}
               labelStyle={{ color: "#f8fafc" }}
               formatter={(value, name) => [formatNum(Number(value ?? 0)), String(name)]}
             />
@@ -170,7 +170,7 @@ export default function DashboardPage() {
               >
                 {durationDistribution.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
               </Pie>
-              <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }} />
+              <Tooltip contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }} />
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
@@ -179,11 +179,11 @@ export default function DashboardPage() {
         <ChartContainer title="Tags les plus fréquents">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={topTags} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis type="number" stroke="#94a3b8" />
-              <YAxis dataKey="tag" type="category" width={120} stroke="#94a3b8" tick={{ fontSize: 12 }} />
-              <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }} />
-              <Bar dataKey="count" name="Occurrences" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
+              <XAxis type="number" stroke="#8896b3" />
+              <YAxis dataKey="tag" type="category" width={120} stroke="#8896b3" tick={{ fontSize: 12 }} />
+              <Tooltip contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }} />
+              <Bar dataKey="count" name="Occurrences" fill="#6366f1" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
@@ -195,14 +195,14 @@ export default function DashboardPage() {
           {/* Mini chart */}
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={yearly}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis dataKey="year" stroke="#94a3b8" fontSize={12} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(v) => v.toFixed(2) + "%"} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
+              <XAxis dataKey="year" stroke="#8896b3" fontSize={12} />
+              <YAxis stroke="#8896b3" fontSize={12} tickFormatter={(v) => v.toFixed(2) + "%"} />
               <Tooltip
-                contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }}
+                contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }}
                 formatter={(value) => [Number(value ?? 0).toFixed(2) + "%", "Engagement"]}
               />
-              <Bar dataKey="engagement" fill="#ec4899" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="engagement" fill="#f472b6" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
 
@@ -222,7 +222,7 @@ export default function DashboardPage() {
                     <td className="py-2 px-2 font-medium">{y.year}</td>
                     <td className="py-2 px-2 text-right text-muted">{y.count}</td>
                     <td className="py-2 px-2 text-right">
-                      <span className="font-bold" style={{ color: "#ec4899" }}>{y.engagement.toFixed(2)}%</span>
+                      <span className="font-bold" style={{ color: "#f472b6" }}>{y.engagement.toFixed(2)}%</span>
                     </td>
                   </tr>
                 ))}
@@ -241,11 +241,11 @@ export default function DashboardPage() {
       <ChartContainer title="🏆 Mois les plus vus">
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
           {bestMonths.map((m, i) => (
-            <div key={m.month} className="card p-4 text-center">
-              <div className="text-xs text-muted">#{i + 1}</div>
+            <div key={m.month} className="rounded-lg border p-4 text-center" style={{ borderColor: "var(--card-border)", background: "var(--card-bg)" }}>
+              <div className="text-xs" style={{ color: "var(--muted)" }}>#{i + 1}</div>
               <div className="text-lg font-semibold mt-1">{m.month}</div>
-              <div className="text-accent font-bold">{formatNum(m.views)} vues</div>
-              <div className="text-sm text-muted">{m.count} épisodes</div>
+              <div className="font-bold" style={{ color: "var(--accent-light)" }}>{formatNum(m.views)} vues</div>
+              <div className="text-sm" style={{ color: "var(--muted)" }}>{m.count} épisodes</div>
             </div>
           ))}
         </div>
@@ -266,7 +266,7 @@ export default function DashboardPage() {
             </thead>
             <tbody>
               {topVideos.map((v, i) => (
-                <tr key={i} className="border-b border-[var(--card-border)] hover:bg-[#334155]/30 transition">
+                <tr key={i} className="border-b border-[var(--card-border)] hover:bg-white/[0.03] transition">
                   <td className="py-2 pr-3 text-muted">{i + 1}</td>
                   <td className="py-2 pr-3">
                     <a href={v.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline line-clamp-1">{v.title}</a>

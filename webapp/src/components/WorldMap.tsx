@@ -38,14 +38,14 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
 function getColor(count: number, maxCount: number): string {
   if (count === 0) return "transparent";
   const ratio = Math.log(count + 1) / Math.log(maxCount + 1);
-  // Blue scale from light to dark
-  if (ratio > 0.85) return "#1e3a8a"; // 900
-  if (ratio > 0.7) return "#1e40af";  // 800
-  if (ratio > 0.55) return "#1d4ed8"; // 700
-  if (ratio > 0.4) return "#2563eb";  // 600
-  if (ratio > 0.25) return "#3b82f6"; // 500
-  if (ratio > 0.12) return "#60a5fa"; // 400
-  return "#93c5fd";                    // 300
+  // Indigo scale from light to dark
+  if (ratio > 0.85) return "#312e81"; // indigo-900
+  if (ratio > 0.7) return "#3730a3";  // indigo-800
+  if (ratio > 0.55) return "#4338ca"; // indigo-700
+  if (ratio > 0.4) return "#4f46e5";  // indigo-600
+  if (ratio > 0.25) return "#6366f1"; // indigo-500
+  if (ratio > 0.12) return "#818cf8"; // indigo-400
+  return "#a5b4fc";                    // indigo-300
 }
 
 export default function WorldMap({ geoData }: WorldMapProps) {
@@ -73,7 +73,7 @@ export default function WorldMap({ geoData }: WorldMapProps) {
     <div className="relative">
       <div
         className="rounded-lg overflow-hidden border"
-        style={{ borderColor: "var(--card-border)", background: "#0c1929" }}
+        style={{ borderColor: "var(--card-border)", background: "#080e1a" }}
       >
         <ComposableMap
           projectionConfig={{ rotate: [-10, 0, 0], scale: 147 }}
@@ -88,7 +88,7 @@ export default function WorldMap({ geoData }: WorldMapProps) {
                   const numericId = geo.id;
                   const count = countByNumeric[numericId] || 0;
                   const entry = dataByNumeric[numericId];
-                  const fill = count > 0 ? getColor(count, maxCount) : "#1e293b";
+                  const fill = count > 0 ? getColor(count, maxCount) : "#141d2f";
 
                   return (
                     <Geography
@@ -114,20 +114,20 @@ export default function WorldMap({ geoData }: WorldMapProps) {
                       style={{
                         default: {
                           fill,
-                          stroke: "#334155",
+                          stroke: "#1e3050",
                           strokeWidth: 0.5,
                           outline: "none",
                           cursor: entry ? "pointer" : "default",
                         },
                         hover: {
-                          fill: entry ? "#f59e0b" : "#334155",
-                          stroke: "#94a3b8",
+                          fill: entry ? "#fbbf24" : "#1e3050",
+                          stroke: "#8896b3",
                           strokeWidth: entry ? 1 : 0.5,
                           outline: "none",
                           cursor: entry ? "pointer" : "default",
                         },
                         pressed: {
-                          fill: entry ? "#d97706" : "#334155",
+                          fill: entry ? "#d97706" : "#1e3050",
                           outline: "none",
                         },
                       }}
@@ -147,8 +147,8 @@ export default function WorldMap({ geoData }: WorldMapProps) {
           style={{
             left: tooltipPos.x + 12,
             top: tooltipPos.y - 28,
-            background: "#1e293b",
-            border: "1px solid #334155",
+            background: "#141d2f",
+            border: "1px solid #1e3050",
             color: "#f8fafc",
           }}
         >
@@ -160,9 +160,9 @@ export default function WorldMap({ geoData }: WorldMapProps) {
       <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-muted justify-center">
         <span>Mentions:</span>
         {[
-          { color: "#93c5fd", label: "Faible" },
-          { color: "#3b82f6", label: "Moyen" },
-          { color: "#1e3a8a", label: "Élevé" },
+          { color: "#a5b4fc", label: "Faible" },
+          { color: "#6366f1", label: "Moyen" },
+          { color: "#312e81", label: "Élevé" },
         ].map((l) => (
           <div key={l.label} className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm inline-block" style={{ backgroundColor: l.color }} />

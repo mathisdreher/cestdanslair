@@ -8,8 +8,8 @@ import {
 import { ChartContainer } from "@/components/Cards";
 
 const KEYWORD_COLORS = [
-  "#3b82f6", "#ec4899", "#22c55e", "#f59e0b", "#8b5cf6",
-  "#06b6d4", "#f43f5e", "#14b8a6",
+  "#6366f1", "#f472b6", "#34d399", "#fbbf24", "#a78bfa",
+  "#22d3ee", "#f87171", "#2dd4bf",
 ];
 
 interface Summary {
@@ -156,9 +156,9 @@ export default function KeywordsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold mb-1">Keyword Tracker</h2>
+        <h2 className="text-2xl font-bold mb-1">Suivi de mots-clés</h2>
         <p style={{ color: "var(--muted)" }}>
-          Compare up to 5 keywords over time. Separate with commas (e.g. &quot;Trump, Macron, Ukraine&quot;)
+          Comparez jusqu&apos;à 5 mots-clés dans le temps. Séparez-les par des virgules (ex : &quot;Trump, Macron, Ukraine&quot;)
         </p>
       </div>
 
@@ -168,8 +168,8 @@ export default function KeywordsPage() {
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter keywords separated by commas..."
-          className="flex-1 px-4 py-3 rounded-lg border text-sm outline-none focus:ring-2"
+          placeholder="Entrez des mots-clés séparés par des virgules..."
+          className="flex-1 px-4 py-3 rounded-lg border text-sm outline-none focus:ring-2 focus:ring-[var(--accent)]"
           style={{ background: "var(--card-bg)", borderColor: "var(--card-border)", color: "var(--foreground)" }}
         />
         <button
@@ -178,13 +178,13 @@ export default function KeywordsPage() {
           className="px-6 py-3 rounded-lg font-medium text-sm text-white transition-opacity disabled:opacity-50"
           style={{ background: "var(--accent)" }}
         >
-          {loading ? "..." : "Compare"}
+          {loading ? "..." : "Comparer"}
         </button>
       </form>
 
-      {/* Quick suggestions */}
+      {/* Suggestions rapides */}
       <div className="flex flex-wrap gap-2">
-        <span className="text-xs py-1" style={{ color: "var(--muted)" }}>Suggestions:</span>
+        <span className="text-xs py-1" style={{ color: "var(--muted)" }}>Suggestions :</span>
         {suggestions.map((s) => (
           <button
             key={s}
@@ -197,10 +197,10 @@ export default function KeywordsPage() {
         ))}
       </div>
 
-      {/* Year filter */}
+      {/* Filtre par année */}
       {data?.availableYears && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs py-1" style={{ color: "var(--muted)" }}>Years:</span>
+          <span className="text-xs py-1" style={{ color: "var(--muted)" }}>Années :</span>
           <button
             onClick={clearYears}
             className="px-3 py-1 rounded text-xs border transition-all"
@@ -210,7 +210,7 @@ export default function KeywordsPage() {
               color: selectedYears.size === 0 ? "white" : "var(--muted)",
             }}
           >
-            All
+            Toutes
           </button>
           {data.availableYears.map((y) => (
             <button
@@ -261,12 +261,12 @@ export default function KeywordsPage() {
                 </div>
                 <p className="text-2xl font-bold">{s.totalMatches}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs" style={{ color: "var(--muted)" }}>{s.percentage}% of all</span>
+                  <span className="text-xs" style={{ color: "var(--muted)" }}>{s.percentage}% du total</span>
                   <span
                     className="text-xs font-medium"
-                    style={{ color: s.trend > 0 ? "#22c55e" : s.trend < 0 ? "#ef4444" : "var(--muted)" }}
+                    style={{ color: s.trend > 0 ? "#34d399" : s.trend < 0 ? "#f87171" : "var(--muted)" }}
                   >
-                    {s.trend > 0 ? "↑" : s.trend < 0 ? "↓" : "→"} {Math.abs(s.trend)}% vs prev year
+                    {s.trend > 0 ? "↑" : s.trend < 0 ? "↓" : "→"} {Math.abs(s.trend)}% vs année préc.
                   </span>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function KeywordsPage() {
                 color: chartMode === "monthly" ? "white" : "var(--muted)",
               }}
             >
-              Monthly
+              Mensuel
             </button>
             <button
               onClick={() => setChartMode("yearly")}
@@ -293,17 +293,17 @@ export default function KeywordsPage() {
                 color: chartMode === "yearly" ? "white" : "var(--muted)",
               }}
             >
-              Yearly
+              Annuel
             </button>
             <span className="text-xs ml-2" style={{ color: "var(--muted)" }}>
-              Click on a keyword card above to show/hide its curve
+              Cliquez sur une carte de mot-clé pour afficher/masquer sa courbe
             </span>
           </div>
 
           {/* Main timeline chart */}
           <ChartContainer
-            title={chartMode === "monthly" ? "Monthly Occurrences" : "Yearly Occurrences"}
-            subtitle="Number of episodes mentioning each keyword"
+            title={chartMode === "monthly" ? "Occurrences mensuelles" : "Occurrences annuelles"}
+            subtitle="Nombre d'épisodes mentionnant chaque mot-clé"
           >
             <ResponsiveContainer width="100%" height={400}>
               <AreaChart data={chartMode === "monthly" ? data.monthlyTimeline : data.yearlyData}>
@@ -315,19 +315,19 @@ export default function KeywordsPage() {
                     </linearGradient>
                   ))}
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
                 <XAxis
                   dataKey={chartMode === "monthly" ? "month" : "year"}
-                  stroke="#94a3b8"
+                  stroke="#8896b3"
                   fontSize={11}
                   interval={chartMode === "monthly" ? Math.max(Math.floor(data.monthlyTimeline.length / 15), 0) : 0}
                   angle={chartMode === "monthly" ? -45 : 0}
                   textAnchor={chartMode === "monthly" ? "end" : "middle"}
                   height={chartMode === "monthly" ? 60 : 30}
                 />
-                <YAxis stroke="#94a3b8" fontSize={12} />
+                <YAxis stroke="#8896b3" fontSize={12} />
                 <Tooltip
-                  contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: "8px" }}
+                  contentStyle={{ background: "#141d2f", border: "1px solid #1e3050", borderRadius: "8px" }}
                   labelStyle={{ color: "#e2e8f0" }}
                 />
                 <Legend
@@ -355,16 +355,16 @@ export default function KeywordsPage() {
           </ChartContainer>
 
           {/* Views comparison */}
-          <ChartContainer title="Views Comparison" subtitle="Total views attracted by each keyword per year">
+          <ChartContainer title="Comparaison des vues" subtitle="Vues totales générées par chaque mot-clé par année">
             <ResponsiveContainer width="100%" height={350}>
               <BarChart data={data.yearlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="year" stroke="#94a3b8" fontSize={12} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}M`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
+                <XAxis dataKey="year" stroke="#8896b3" fontSize={12} />
+                <YAxis stroke="#8896b3" fontSize={12} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}M`} />
                 <Tooltip
-                  contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: "8px" }}
+                  contentStyle={{ background: "#141d2f", border: "1px solid #1e3050", borderRadius: "8px" }}
                   labelStyle={{ color: "#e2e8f0" }}
-                  formatter={(value) => [Number(value ?? 0).toLocaleString("fr-FR"), "Views"]}
+                  formatter={(value) => [Number(value ?? 0).toLocaleString("fr-FR"), "Vues"]}
                 />
                 <Legend
                   onClick={(e) => {
@@ -388,8 +388,8 @@ export default function KeywordsPage() {
 
           {/* All matching videos */}
           <ChartContainer
-            title={`All Matching Videos (${data.pagination.total})`}
-            subtitle="Every episode mentioning any searched keyword"
+            title={`Toutes les vidéos correspondantes (${data.pagination.total})`}
+            subtitle="Chaque épisode mentionnant un mot-clé recherché"
           >
             {/* Sort controls */}
             <div className="flex gap-2 mb-4">
@@ -436,7 +436,7 @@ export default function KeywordsPage() {
                         {new Date(v.published_at).toLocaleDateString("fr-FR")}
                       </span>
                       <span className="text-xs" style={{ color: "var(--muted)" }}>
-                        {v.views.toLocaleString("fr-FR")} views
+                        {v.views.toLocaleString("fr-FR")} vues
                       </span>
                       {v.matchedKeywords.map((kw) => {
                         const idx = data.keywords.indexOf(kw);
@@ -457,7 +457,7 @@ export default function KeywordsPage() {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-sm font-bold">{v.views.toLocaleString("fr-FR")}</p>
-                    <p className="text-xs" style={{ color: "var(--muted)" }}>views</p>
+                    <p className="text-xs" style={{ color: "var(--muted)" }}>vues</p>
                   </div>
                 </a>
               ))}
@@ -467,7 +467,7 @@ export default function KeywordsPage() {
             {data.pagination.totalPages > 1 && (
               <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: "var(--card-border)" }}>
                 <p className="text-sm" style={{ color: "var(--muted)" }}>
-                  Page {data.pagination.page} of {data.pagination.totalPages} ({data.pagination.total} videos)
+                  Page {data.pagination.page} sur {data.pagination.totalPages} ({data.pagination.total} vidéos)
                 </p>
                 <div className="flex gap-2">
                   <button
@@ -476,7 +476,7 @@ export default function KeywordsPage() {
                     className="px-3 py-1 rounded border text-sm disabled:opacity-30"
                     style={{ borderColor: "var(--card-border)" }}
                   >
-                    ← Previous
+                    ← Précédent
                   </button>
                   {/* Page numbers */}
                   {Array.from({ length: Math.min(5, data.pagination.totalPages) }, (_, i) => {
@@ -504,7 +504,7 @@ export default function KeywordsPage() {
                     className="px-3 py-1 rounded border text-sm disabled:opacity-30"
                     style={{ borderColor: "var(--card-border)" }}
                   >
-                    Next →
+                    Suivant →
                   </button>
                 </div>
               </div>
@@ -519,11 +519,11 @@ export default function KeywordsPage() {
           style={{ background: "var(--card-bg)", borderColor: "var(--card-border)" }}
         >
           <p className="text-4xl mb-4">🔍</p>
-          <p className="text-lg font-medium mb-2">Search and compare keywords</p>
+          <p className="text-lg font-medium mb-2">Rechercher et comparer des mots-clés</p>
           <p className="text-sm" style={{ color: "var(--muted)" }}>
-            Enter one or more keywords separated by commas to see how media coverage evolved over time.
+            Entrez un ou plusieurs mots-clés séparés par des virgules pour voir l&apos;évolution de la couverture médiatique.
             <br />
-            Try: <button onClick={() => { setInputValue("Trump, Macron"); fetchData("Trump, Macron", 1, sort, order); }} className="underline" style={{ color: "var(--accent-light)" }}>Trump, Macron</button>
+            Essayez : <button onClick={() => { setInputValue("Trump, Macron"); fetchData("Trump, Macron", 1, sort, order); }} className="underline" style={{ color: "var(--accent-light)" }}>Trump, Macron</button>
             {" · "}
             <button onClick={() => { setInputValue("Ukraine, Russie, Gaza"); fetchData("Ukraine, Russie, Gaza", 1, sort, order); }} className="underline" style={{ color: "var(--accent-light)" }}>Ukraine, Russie, Gaza</button>
             {" · "}
