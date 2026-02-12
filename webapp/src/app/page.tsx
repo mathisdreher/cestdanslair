@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-  BarChart, Bar, PieChart, Pie, Cell, Legend,
+  BarChart, Bar, PieChart, Pie, Cell,
 } from "recharts";
 import { StatCard, ChartContainer } from "@/components/Cards";
 import dynamic from "next/dynamic";
@@ -151,46 +151,35 @@ export default function DashboardPage() {
         </ChartContainer>
       </div>
 
-      {/* Engagement overview - hybrid table & chart */}
+      {/* Engagement overview - table only */}
       <ChartContainer title="📊 Engagement par année" subtitle="Ratio likes + commentaires / vues">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Mini chart */}
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={yearly}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e3050" />
-              <XAxis dataKey="year" stroke="#8896b3" fontSize={12} />
-              <YAxis stroke="#8896b3" fontSize={12} tickFormatter={(v) => v.toFixed(2) + "%"} />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#141d2f", border: "1px solid #1e3050", borderRadius: 8 }}
-                formatter={(value) => [Number(value ?? 0).toFixed(2) + "%", "Engagement"]}
-              />
-              <Bar dataKey="engagement" fill="#f472b6" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-
-          {/* Table */}
-          <div className="overflow-y-auto max-h-[300px]">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-[var(--card-bg)]">
-                <tr className="text-left text-muted border-b border-[var(--card-border)]">
-                  <th className="py-2 px-2">Année</th>
-                  <th className="py-2 px-2 text-right">Épisodes</th>
-                  <th className="py-2 px-2 text-right">Engagement</th>
+        <div className="overflow-y-auto max-h-[400px]">
+          <table className="w-full text-sm">
+            <thead className="sticky top-0 bg-[var(--card-bg)]">
+              <tr className="text-left text-muted border-b border-[var(--card-border)]">
+                <th className="py-2 px-3">Année</th>
+                <th className="py-2 px-3 text-right">Épisodes</th>
+                <th className="py-2 px-3 text-right">Vues</th>
+                <th className="py-2 px-3 text-right">Likes</th>
+                <th className="py-2 px-3 text-right">Commentaires</th>
+                <th className="py-2 px-3 text-right">Engagement</th>
+              </tr>
+            </thead>
+            <tbody>
+              {yearly.map((y) => (
+                <tr key={y.year} className="border-b border-[var(--card-border)] hover:bg-white/[0.03] transition">
+                  <td className="py-2 px-3 font-medium">{y.year}</td>
+                  <td className="py-2 px-3 text-right text-muted">{y.count}</td>
+                  <td className="py-2 px-3 text-right text-muted">{formatNum(y.views)}</td>
+                  <td className="py-2 px-3 text-right text-muted">{formatNum(y.likes)}</td>
+                  <td className="py-2 px-3 text-right text-muted">{formatNum(y.comments)}</td>
+                  <td className="py-2 px-3 text-right">
+                    <span className="font-bold" style={{ color: "#f472b6" }}>{y.engagement.toFixed(2)}%</span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {yearly.map((y) => (
-                  <tr key={y.year} className="border-b border-[var(--card-border)]">
-                    <td className="py-2 px-2 font-medium">{y.year}</td>
-                    <td className="py-2 px-2 text-right text-muted">{y.count}</td>
-                    <td className="py-2 px-2 text-right">
-                      <span className="font-bold" style={{ color: "#f472b6" }}>{y.engagement.toFixed(2)}%</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </ChartContainer>
 

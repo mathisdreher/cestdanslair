@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
     videos = videos.filter(
       (v) =>
         removeAccents(v.title.toLowerCase()).includes(normalizedSearch) ||
-        v.tags.some((t) => removeAccents(t.toLowerCase()).includes(normalizedSearch))
+        v.tags.some((t) => removeAccents(t.toLowerCase()).includes(normalizedSearch)) ||
+        removeAccents(v.description.toLowerCase()).includes(normalizedSearch)
     );
   }
 
